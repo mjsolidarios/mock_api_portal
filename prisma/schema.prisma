@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id
+  name      String
+  handle    String   @unique
+  avatarUrl String
+  createdAt DateTime @default(now())
+
+  sessions  GameSession[]
+  unlocks   UnlockedArtifact[]
+  feedbacks Feedback[]
+}
+
+model Game {
+  id          String   @id
+  title       String
+  region      String
+  developer   String
+  description String
+  lore        String
+  coverUrl    String
+  heroUrl     String
+  createdAt   DateTime @default(now())
+
+  sessions   GameSession[]
+  artifacts  Artifact[]
+  feedbacks  Feedback[]
+  apiKeys    DeveloperApiKey[]
+}
+
+model GameSession {
+  id        String   @id
+  userId    String
+  gameId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([userId, gameId])
+}
+
+model Artifact {
+  id          String   @id
+  gameId      String
+  name        String
+  description String
+  imageUrl    String
+  rarity      String
+  createdAt   DateTime @default(now())
+
+  game    Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  unlocks UnlockedArtifact[]
+}
+
+model UnlockedArtifact {
+  id         String   @id @default(cuid())
+  userId     String
+  artifactId String
+  sessionId  String
+  unlockedAt DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artifact Artifact @relation(fields: [artifactId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, artifactId])
+  @@index([sessionId])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String?
+  gameId    String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  game Game  @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
+
+model DeveloperApiKey {
+  id        String   @id @default(cuid())
+  gameId    String
+  label     String
+  key       String   @unique
+  createdAt DateTime @default(now())
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
