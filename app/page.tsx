@@ -52,7 +52,7 @@ const gameMeta: Record<
   }
 };
 
-const featuredShelf = ["game_panay", "game_faith", "game_dagat"] as const;
+const featuredShelf = ["game_faith", "game_panay", "game_dagat"] as const;
 
 const featureItems = [
   {
@@ -172,7 +172,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="discover-featured" id="featured-shelf" aria-labelledby="featured-title">
+      <section className="discover-featured mb-32" id="featured-shelf" aria-labelledby="featured-title">
         <div className="discover-featured-copy">
           <div>
             <p className="discover-featured-eyebrow">Featured release</p>
@@ -183,22 +183,24 @@ export default async function HomePage() {
           <p className="discover-featured-desc">
             Explore forgotten harbor routes and reconstruct the civic stories they left behind.
           </p>
-          <Link className="discover-featured-link" href={`/games/${featuredGame?.id ?? "game_panay"}`}>
+          <Link className="discover-featured-link ml-4" href={`/games/${featuredGame?.id ?? "game_panay"}`}>
             Start with Panay
             <ArrowRight aria-hidden="true" />
           </Link>
         </div>
 
         <div className="discover-shelf" aria-label="Featured game shelf">
-          {shelfGames.map((game) => {
+          {shelfGames.map((game, idx) => {
             const meta = gameMeta[game.id];
             const isPrimary = game.id === featuredGame?.id;
+            const position = isPrimary ? "is-active" : idx === 0 ? "is-prev" : idx === 2 ? "is-next" : "";
             return (
               <Link
                 key={game.id}
                 href={`/games/${game.id}`}
-                className={`discover-shelf-card${isPrimary ? " is-primary" : ""}`}
+                className={`discover-shelf-card${isPrimary ? " is-active" : ""}`}
                 data-shelf-card
+                data-position={position}
                 aria-label={`${game.title}, ${meta?.genre ?? "Portal game"}, by ${game.developer}`}
               >
                 <div className="discover-shelf-cover">
@@ -206,40 +208,38 @@ export default async function HomePage() {
                     src={game.coverUrl}
                     alt={`${game.title} cover art`}
                     width={720}
-                    height={460}
+                    height={960}
                     sizes="(max-width: 980px) 100vw, 22vw"
                   />
                   <div className="discover-shelf-fade" aria-hidden="true" />
-                  <div className="discover-shelf-tags" aria-hidden="true">
-                    {isPrimary ? (
-                      <span className="discover-shelf-tag discover-shelf-tag-gold">
-                        <Sparkles />
-                        Featured
+                  <div className="discover-shelf-overlay">
+                    <div className="discover-shelf-tags" aria-hidden="true">
+                      {isPrimary ? (
+                        <span className="discover-shelf-tag discover-shelf-tag-gold">
+                          <Sparkles />
+                          Featured
+                        </span>
+                      ) : null}
+                      <span className="discover-shelf-tag discover-shelf-tag-region">
+                        <Compass />
+                        {game.region}
                       </span>
-                    ) : null}
-                    <span className="discover-shelf-tag discover-shelf-tag-region">
-                      <Compass />
-                      {game.region}
-                    </span>
-                    <span className="discover-shelf-tag discover-shelf-tag-genre">
-                      {meta?.genre ?? "Portal game"}
-                    </span>
+                      <span className="discover-shelf-tag discover-shelf-tag-genre">
+                        {meta?.genre ?? "Portal game"}
+                      </span>
+                    </div>
+                    <div className="discover-shelf-body">
+                      <div className="discover-shelf-titles">
+                        <p className="discover-shelf-developer">{game.developer}</p>
+                        <h3>{game.title}</h3>
+                        <p className="discover-shelf-signal">{meta?.signal ?? "Artifact unlocks"}</p>
+                      </div>
+                      <span className="discover-shelf-cta-pill" aria-hidden="true">
+                        <span>Explore</span>
+                        <ArrowRight />
+                      </span>
+                    </div>
                   </div>
-                  <span className="discover-shelf-artifact" aria-hidden="true">
-                    <Trophy />
-                    {game.artifacts.length} artifact{game.artifacts.length === 1 ? "" : "s"}
-                  </span>
-                </div>
-                <div className="discover-shelf-body">
-                  <div className="discover-shelf-titles">
-                    <p className="discover-shelf-developer">{game.developer}</p>
-                    <h3>{game.title}</h3>
-                    <p className="discover-shelf-signal">{meta?.signal ?? "Artifact unlocks"}</p>
-                  </div>
-                  <span className="discover-shelf-cta-pill" aria-hidden="true">
-                    <span>Explore</span>
-                    <ArrowRight />
-                  </span>
                 </div>
               </Link>
             );

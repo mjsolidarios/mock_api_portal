@@ -70,7 +70,8 @@ export function DiscoverMotion() {
       ease: "power2.out",
       scrollTrigger: {
         trigger: ".discover-featured",
-        start: "top 78%"
+        start: "top 85%",
+        once: true
       }
     });
 
@@ -83,7 +84,11 @@ export function DiscoverMotion() {
       ease: "power3.out",
       scrollTrigger: {
         trigger: ".discover-shelf",
-        start: "top 82%"
+        start: "top 88%",
+        once: true
+      },
+      onComplete: () => {
+        gsap.set(".discover-shelf-card", { clearProps: "transform" });
       }
     });
 
@@ -97,6 +102,8 @@ export function DiscoverMotion() {
         scrub: 0.6
       }
     });
+
+    ScrollTrigger.refresh();
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());

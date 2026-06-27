@@ -1151,6 +1151,7 @@ pre {
 .developer-page {
   display: grid;
   gap: clamp(34px, 5vw, 62px);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .developer-hero {
@@ -1806,7 +1807,7 @@ code {
   .example-grid,
   .tester-grid,
   .profile-header {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .store-hero {
@@ -1979,6 +1980,57 @@ code {
 
   .storefront-hero-copy h1 {
     font-size: clamp(2.55rem, 13vw, 4.6rem);
+  }
+
+  .developer-hero {
+    padding: 22px;
+  }
+
+  .developer-hero .page-title {
+    font-size: clamp(2rem, 10vw, 3.4rem);
+  }
+
+  .developer-hero .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .developer-hero .actions a,
+  .developer-hero .actions button {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .endpoint-card {
+    padding: 18px;
+  }
+
+  .endpoint-card > code {
+    font-size: 1rem;
+    word-break: break-all;
+  }
+
+  .fixture-table th,
+  .fixture-table td {
+    padding: 12px;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field-list div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .scenario-list {
+    grid-template-columns: 1fr;
+  }
+
+  pre {
+    font-size: 0.78rem;
+    padding: 14px;
   }
 }
 
@@ -2606,10 +2658,12 @@ code {
 }
 
 .discover-shelf {
-  align-items: stretch;
+  align-items: center;
   display: grid;
-  gap: clamp(12px, 1.2vw, 16px);
-  grid-template-columns: minmax(210px, 1.14fr) repeat(2, minmax(190px, 1fr)) minmax(190px, 0.95fr);
+  gap: clamp(8px, 1vw, 16px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  perspective: 900px;
+  perspective-origin: 50% 60%;
   position: relative;
   z-index: 1;
 }
@@ -2620,20 +2674,21 @@ code {
     linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
     rgba(11, 18, 24, 0.92);
   border: 1px solid rgba(185, 216, 236, 0.14);
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow:
     0 18px 54px rgba(0, 0, 0, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
   display: grid;
-  grid-template-rows: auto 1fr;
   overflow: hidden;
   position: relative;
   transform-style: preserve-3d;
+  transform-origin: center center;
   transition:
-    background 220ms ease,
-    border-color 220ms ease,
-    transform 220ms ease,
-    box-shadow 220ms ease;
+    background 320ms ease,
+    border-color 320ms ease,
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms ease,
+    z-index 0s linear 200ms;
 }
 
 .discover-shelf-card::before {
@@ -2679,15 +2734,45 @@ code {
   outline-offset: 5px;
 }
 
-.discover-shelf-card.is-primary {
+.discover-shelf-card.is-active {
   border-color: rgba(98, 211, 255, 0.74);
   box-shadow:
     0 0 0 1px rgba(98, 211, 255, 0.26),
-    0 24px 76px rgba(0, 0, 0, 0.36);
+    0 30px 90px rgba(0, 0, 0, 0.5);
+  transform: translateY(-14px) scale(1.06);
+  z-index: 5;
+}
+
+.discover-shelf-card.is-active::before {
+  opacity: 1;
+}
+
+.discover-shelf-card:nth-child(1) {
+  transform: translateX(36%) translateY(26px) rotateY(-26deg) scale(0.88);
+  z-index: 1;
+}
+
+.discover-shelf-card:nth-child(2) {
+  transform: translateX(14%) translateY(12px) rotateY(-12deg) scale(0.94);
+  z-index: 3;
+}
+
+.discover-shelf-card:nth-child(4) {
+  transform: translateX(-20%) translateY(26px) rotateY(22deg) scale(0.86);
+  z-index: 2;
+}
+
+.discover-shelf-card:hover {
+  transform: translateY(-16px) scale(1.07);
+  z-index: 6;
+}
+
+.discover-shelf-card.is-active:hover {
+  transform: translateY(-18px) scale(1.08);
 }
 
 .discover-shelf-cover {
-  aspect-ratio: 16 / 8.4;
+  aspect-ratio: 16 / 22;
   background: #05080c;
   overflow: hidden;
   position: relative;
@@ -2710,46 +2795,53 @@ code {
 
 .discover-shelf-fade {
   background:
-    linear-gradient(180deg, rgba(5, 8, 12, 0.04), rgba(5, 8, 12, 0.22) 46%, rgba(5, 8, 12, 0.72)),
-    linear-gradient(90deg, rgba(8, 13, 18, 0.5), transparent 62%);
+    linear-gradient(180deg, transparent 38%, rgba(5, 8, 12, 0.55) 64%, rgba(5, 8, 12, 0.92)),
+    linear-gradient(180deg, rgba(8, 13, 18, 0.42), transparent 28%);
   inset: 0;
   pointer-events: none;
   position: absolute;
   z-index: 1;
 }
 
+.discover-shelf-overlay {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  inset: auto 0 0;
+  justify-content: flex-end;
+  padding: 14px 14px 16px;
+  position: absolute;
+  z-index: 2;
+}
+
 .discover-shelf-tags {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  left: 12px;
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  z-index: 2;
+  gap: 5px;
 }
 
 .discover-shelf-tag {
   align-items: center;
-  background: rgba(6, 12, 17, 0.66);
-  border: 1px solid rgba(221, 236, 244, 0.16);
-  border-radius: 5px;
+  background: rgba(6, 12, 17, 0.72);
+  border: 1px solid rgba(221, 236, 244, 0.18);
+  border-radius: 999px;
   color: var(--discover-muted-strong);
   display: inline-flex;
   font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
-  font-size: 0.61rem;
+  font-size: 0.6rem;
   font-weight: 850;
-  gap: 5px;
+  gap: 4px;
   letter-spacing: 0.06em;
   line-height: 1;
-  padding: 5px 7px;
+  padding: 4px 8px;
   text-transform: uppercase;
 }
 
 .discover-shelf-tag svg {
-  height: 12px;
-  width: 12px;
+  height: 11px;
+  width: 11px;
 }
 
 .discover-shelf-tag-gold {
@@ -2758,66 +2850,38 @@ code {
   color: #f9deb0;
 }
 
-.discover-shelf-artifact {
-  align-items: center;
-  background: rgba(6, 12, 17, 0.7);
-  border: 1px solid rgba(221, 236, 244, 0.14);
-  border-radius: 5px;
-  bottom: 12px;
-  color: var(--discover-ink);
-  display: inline-flex;
-  font-size: 0.74rem;
-  font-weight: 750;
-  gap: 6px;
-  left: 12px;
-  padding: 6px 8px;
-  position: absolute;
-  z-index: 2;
-}
-
-.discover-shelf-artifact svg {
-  color: #e6b974;
-  height: 14px;
-  width: 14px;
-}
-
 .discover-shelf-body {
-  align-items: end;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent),
-    rgba(6, 12, 17, 0.82);
-  border-top: 1px solid rgba(185, 216, 236, 0.1);
   display: grid;
-  gap: 16px;
+  gap: 10px;
   grid-template-columns: minmax(0, 1fr);
-  min-height: 126px;
-  padding: 16px;
   position: relative;
-  z-index: 2;
 }
 
 .discover-shelf-titles {
   display: grid;
-  gap: 5px;
+  align-content: start;
+  gap: 4px;
   min-width: 0;
 }
 
 .discover-shelf-developer {
   color: var(--discover-muted-strong);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 750;
+  letter-spacing: 0.04em;
   line-height: 1.25;
   margin: 0;
   min-width: 0;
   overflow-wrap: break-word;
+  text-transform: uppercase;
 }
 
 .discover-shelf-body h3 {
   color: var(--discover-ink);
-  font-size: clamp(1.05rem, 1.25vw, 1.22rem);
+  font-size: clamp(1.18rem, 1.45vw, 1.55rem);
   font-weight: 800;
-  letter-spacing: -0.015em;
-  line-height: 1.08;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
   margin: 0;
   min-width: 0;
   overflow-wrap: break-word;
@@ -2828,7 +2892,7 @@ code {
 
 .discover-shelf-signal {
   color: var(--discover-muted);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 650;
   line-height: 1.28;
   margin: 0;
@@ -2852,14 +2916,22 @@ code {
 
 .discover-shelf-cta-pill {
   align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(221, 236, 244, 0.2);
+  border-radius: 999px;
   color: var(--discover-ink);
   display: inline-flex;
-  font-size: 0.88rem;
-  font-weight: 850;
+  font-size: 0.78rem;
+  font-weight: 800;
   gap: 8px;
   justify-self: start;
+  letter-spacing: 0.04em;
   line-height: 1;
+  padding: 7px 11px 7px 13px;
+  text-transform: uppercase;
   transition:
+    background 180ms ease,
+    border-color 180ms ease,
     color 180ms ease,
     transform 180ms ease;
 }
@@ -2881,6 +2953,7 @@ code {
 .discover-shelf-cta {
   align-content: center;
   align-items: center;
+  aspect-ratio: 16 / 22;
   background:
     radial-gradient(circle at 100% 0%, rgba(98, 211, 255, 0.18), transparent 36%),
     radial-gradient(circle at 0% 100%, rgba(230, 185, 116, 0.11), transparent 38%),
@@ -2888,18 +2961,15 @@ code {
     rgba(11, 18, 24, 0.9);
   display: grid;
   grid-template-columns: 1fr;
-  min-height: 100%;
+  padding: 18px;
 }
 
 .discover-shelf-cta .discover-shelf-body {
   align-content: center;
   background: transparent;
-  border-top: 0;
   display: grid;
   gap: 12px;
-  margin: 0;
-  min-height: 100%;
-  padding: 22px;
+  padding: 0;
 }
 
 .discover-shelf-cta p {
@@ -3157,14 +3227,37 @@ code {
   .discover-hero {
     display: grid;
     gap: 24px;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     min-height: auto;
+  }
+
+  .discover-shelf {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    perspective: none;
+  }
+
+  .discover-shelf-card,
+  .discover-shelf-card:nth-child(1),
+  .discover-shelf-card:nth-child(2),
+  .discover-shelf-card:nth-child(4),
+  .discover-shelf-card.is-active {
+    transform: none;
+  }
+
+  .discover-shelf-card:hover,
+  .discover-shelf-card.is-active:hover {
+    transform: translateY(-4px);
+  }
+
+  .discover-shelf-cover {
+    aspect-ratio: 16 / 12;
   }
 
   .discover-hero-media {
     aspect-ratio: 16 / 10;
+    height: auto;
     inset: auto;
-    min-height: clamp(280px, 64vw, 480px);
+    min-height: clamp(220px, 64vw, 420px);
     position: relative;
     width: 100%;
   }
@@ -3190,7 +3283,7 @@ code {
   }
 
   .discover-featured {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .discover-featured-copy {
@@ -3215,7 +3308,7 @@ code {
   }
 
   .shell-footer-links {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .store-discover {
@@ -3257,7 +3350,26 @@ code {
   }
 
   .discover-shelf {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    perspective: none;
+  }
+
+  .discover-shelf-card,
+  .discover-shelf-card:nth-child(1),
+  .discover-shelf-card:nth-child(2),
+  .discover-shelf-card:nth-child(4),
+  .discover-shelf-card.is-active {
+    grid-row: auto;
+    transform: none;
+  }
+
+  .discover-shelf-card:hover,
+  .discover-shelf-card.is-active:hover {
+    transform: translateY(-4px);
+  }
+
+  .discover-shelf-cover {
+    aspect-ratio: 16 / 11;
   }
 
   .discover-featured {
@@ -3267,7 +3379,7 @@ code {
 
   .discover-featured-copy {
     align-items: start;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     padding: 6px 4px 10px;
   }
 
