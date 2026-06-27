@@ -81,6 +81,35 @@ export default async function RootLayout({
           </div>
         </header>
         <main id="content">{children}</main>
+        <footer className="shell-footer" aria-label="Site footer">
+          <div className="shell-footer-brand">
+            <Link className="footer-brand" href="/">
+              R6 Portal
+            </Link>
+            <p>
+              Public Region 6 game catalogue, cultural artifact records, and unlock API
+              testing for local creators.
+            </p>
+          </div>
+          <nav className="shell-footer-links" aria-label="Footer navigation">
+            <div>
+              <h2>Explore</h2>
+              <Link href="/">Discover</Link>
+              <Link href="/games">Game catalogue</Link>
+              <Link href="/profile/user_maya">Player library</Link>
+            </div>
+            <div>
+              <h2>Build</h2>
+              <Link href="/developer">API tools</Link>
+              <Link href="/api/games">Games endpoint</Link>
+              <Link href="/api/achievements/unlock">Unlock route</Link>
+            </div>
+          </nav>
+          <div className="shell-footer-meta">
+            <p>Demo data only. Replace seeded keys before deployment.</p>
+            <span>Region 6 Portal MVP</span>
+          </div>
+        </footer>
       </body>
     </html>
   );

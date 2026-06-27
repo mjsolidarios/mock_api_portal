@@ -8,7 +8,8 @@ import {
   Globe2,
   MessageSquare,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Trophy
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -173,13 +174,19 @@ export default async function HomePage() {
 
       <section className="discover-featured" id="featured-shelf" aria-labelledby="featured-title">
         <div className="discover-featured-copy">
-          <p className="discover-featured-eyebrow">FEATURED</p>
-          <h2 id="featured-title" className="discover-featured-title">
-            Echoes of Panay
-          </h2>
+          <div>
+            <p className="discover-featured-eyebrow">Featured release</p>
+            <h2 id="featured-title" className="discover-featured-title">
+              Echoes of Panay
+            </h2>
+          </div>
           <p className="discover-featured-desc">
-            Explore forgotten harbor routes and reconstruct the stories they left behind.
+            Explore forgotten harbor routes and reconstruct the civic stories they left behind.
           </p>
+          <Link className="discover-featured-link" href={`/games/${featuredGame?.id ?? "game_panay"}`}>
+            Start with Panay
+            <ArrowRight aria-hidden="true" />
+          </Link>
         </div>
 
         <div className="discover-shelf" aria-label="Featured game shelf">
@@ -191,6 +198,8 @@ export default async function HomePage() {
                 key={game.id}
                 href={`/games/${game.id}`}
                 className={`discover-shelf-card${isPrimary ? " is-primary" : ""}`}
+                data-shelf-card
+                aria-label={`${game.title}, ${meta?.genre ?? "Portal game"}, by ${game.developer}`}
               >
                 <div className="discover-shelf-cover">
                   <Image
@@ -201,22 +210,57 @@ export default async function HomePage() {
                     sizes="(max-width: 980px) 100vw, 22vw"
                   />
                   <div className="discover-shelf-fade" aria-hidden="true" />
+                  <div className="discover-shelf-tags" aria-hidden="true">
+                    {isPrimary ? (
+                      <span className="discover-shelf-tag discover-shelf-tag-gold">
+                        <Sparkles />
+                        Featured
+                      </span>
+                    ) : null}
+                    <span className="discover-shelf-tag discover-shelf-tag-region">
+                      <Compass />
+                      {game.region}
+                    </span>
+                    <span className="discover-shelf-tag discover-shelf-tag-genre">
+                      {meta?.genre ?? "Portal game"}
+                    </span>
+                  </div>
+                  <span className="discover-shelf-artifact" aria-hidden="true">
+                    <Trophy />
+                    {game.artifacts.length} artifact{game.artifacts.length === 1 ? "" : "s"}
+                  </span>
                 </div>
                 <div className="discover-shelf-body">
-                  <h3>{game.title}</h3>
-                  <span className="discover-shelf-genre">{meta?.genre ?? "Portal game"}</span>
+                  <div className="discover-shelf-titles">
+                    <p className="discover-shelf-developer">{game.developer}</p>
+                    <h3>{game.title}</h3>
+                    <p className="discover-shelf-signal">{meta?.signal ?? "Artifact unlocks"}</p>
+                  </div>
+                  <span className="discover-shelf-cta-pill" aria-hidden="true">
+                    <span>Explore</span>
+                    <ArrowRight />
+                  </span>
                 </div>
               </Link>
             );
           })}
 
-          <Link className="discover-shelf-card discover-shelf-cta" href="/games">
+          <Link
+            className="discover-shelf-card discover-shelf-cta"
+            href="/games"
+            data-shelf-card
+            aria-label="View all games in the catalogue"
+          >
             <div className="discover-shelf-body">
               <span className="discover-shelf-cta-icon" aria-hidden="true">
                 <ArrowRight />
               </span>
               <h3>View all games</h3>
               <p>Explore the full catalogue</p>
+              <span className="discover-shelf-cta-pill" aria-hidden="true">
+                <span>Open catalogue</span>
+                <ArrowRight />
+              </span>
             </div>
           </Link>
         </div>
