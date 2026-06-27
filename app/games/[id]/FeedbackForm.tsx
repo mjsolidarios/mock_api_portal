@@ -1,21 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 type FeedbackFormProps = {
   gameId: string;
 };
 
 export function FeedbackForm({ gameId }: FeedbackFormProps) {
+  const router = useRouter();
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [rating, setRating] = useState("5");
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
     setStatus("submitting");
     setMessage("");
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
     const response = await fetch(`/api/games/${gameId}/feedback`, {
       method: "POST",
       headers: {
@@ -36,9 +41,10 @@ export function FeedbackForm({ gameId }: FeedbackFormProps) {
       return;
     }
 
-    event.currentTarget.reset();
+    form.reset();
     setStatus("success");
-    setMessage("Feedback saved.");
+    setMessage("Feedback saved. Recent feedback has been updated.");
+    router.refresh();
   }
 
   return (
@@ -46,28 +52,37 @@ export function FeedbackForm({ gameId }: FeedbackFormProps) {
       <label>
         Demo user
         <select name="userId" defaultValue="user_maya">
-          <option value="user_maya">Maya Reyes</option>
-          <option value="user_lio">Lio Santos</option>
+          <option value="user_maya">PixelKite</option>
+          <option value="user_lio">NeonRogue</option>
           <option value="">Anonymous</option>
         </select>
       </label>
       <label>
         Rating
-        <select name="rating" defaultValue="5">
-          <option value="5">5</option>
-          <option value="4">4</option>
-          <option value="3">3</option>
-          <option value="2">2</option>
-          <option value="1">1</option>
-        </select>
+        <span className="star-rating-input" role="radiogroup" aria-label="Rating">
+          {[1, 2, 3, 4, 5].map((value) => (
+            <label key={value}>
+              <input
+                checked={rating === String(value)}
+                name="rating"
+                onChange={() => setRating(String(value))}
+                type="radio"
+                value={value}
+              />
+              <span aria-hidden="true">★</span>
+              <span className="sr-only">{value} out of 5</span>
+            </label>
+          ))}
+          <strong>{rating}/5</strong>
+        </span>
       </label>
       <label>
         Comment
         <textarea name="comment" rows={4} minLength={8} maxLength={500} required />
       </label>
-      <button className="button" disabled={status === "submitting"} type="submit">
+      <Button disabled={status === "submitting"} type="submit" size="lg">
         {status === "submitting" ? "Saving..." : "Submit feedback"}
-      </button>
+      </Button>
       {message ? (
         <p className={`notice ${status === "success" ? "success" : "error"}`}>{message}</p>
       ) : null}

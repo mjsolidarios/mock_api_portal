@@ -1,9 +1,19 @@
-import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, Box, Database, KeyRound, Sparkles, Star } from "lucide-react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  BookOpen,
+  ChevronRight,
+  Compass,
+  Globe2,
+  MessageSquare,
+  ShieldCheck,
+  Sparkles
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { DiscoverMotion } from "@/app/DiscoverMotion";
+import { FeaturedHero, type FeaturedGame } from "@/components/FeaturedHero";
 import { prisma } from "@/lib/prisma";
 
 const gameMeta: Record<
@@ -15,21 +25,60 @@ const gameMeta: Record<
   }
 > = {
   game_panay: {
-    genre: "civic mystery",
+    genre: "Adventure",
     tone: "harbor routes and archive fragments",
     signal: "Map-led exploration"
   },
+  game_faith: {
+    genre: "Puzzle",
+    tone: "sacred relics and parish chronicles",
+    signal: "Inscription decoding"
+  },
+  game_dagat: {
+    genre: "Strategy",
+    tone: "coastal watch and maritime heritage",
+    signal: "Patrol routing"
+  },
   game_sugar: {
-    genre: "logistics puzzle",
+    genre: "Logistics",
     tone: "rail schedules, ledgers, and timed dispatch",
     signal: "Route planning"
   },
   game_weave: {
-    genre: "coastal adventure",
+    genre: "Coastal",
     tone: "pattern repair and community memory",
     signal: "Craft restoration"
   }
 };
+
+const featuredShelf = ["game_panay", "game_faith", "game_dagat"] as const;
+
+const featureItems = [
+  {
+    icon: BookOpen,
+    eyebrow: "01",
+    title: "Curated Games",
+    description: "Quality games from local creators across Region 6, hand-picked for cultural depth."
+  },
+  {
+    icon: Compass,
+    eyebrow: "02",
+    title: "Cultural Artifacts",
+    description: "Collect, learn about, and preserve the heritage embedded in every unlock."
+  },
+  {
+    icon: MessageSquare,
+    eyebrow: "03",
+    title: "Unlock API",
+    description: "Connect play data to public player libraries with a single signed handshake."
+  },
+  {
+    icon: ShieldCheck,
+    eyebrow: "04",
+    title: "Public & Open",
+    description: "Built for transparency. Every portal entry is auditable by the community."
+  }
+];
 
 export default async function HomePage() {
   const games = await prisma.game.findMany({
@@ -47,130 +96,130 @@ export default async function HomePage() {
     }
   });
 
-  const featuredGame = games[0];
-  const artifactCount = games.reduce((total, game) => total + game.artifacts.length, 0);
-  const feedbackCount = games.reduce((total, game) => total + game.feedbacks.length, 0);
-  const featuredMeta = featuredGame ? gameMeta[featuredGame.id] : undefined;
+  const featuredGame = games.find((game) => game.id === "game_panay") ?? games[0];
+  const rotationGames: FeaturedGame[] = (featuredGame ? [featuredGame] : []).concat(
+    games.filter((game) => game.id !== featuredGame?.id)
+  );
+  const signals: Record<string, string> = {};
+  for (const game of games) {
+    signals[game.id] = gameMeta[game.id]?.signal ?? "Artifact unlocks";
+  }
+  const shelfGames = featuredShelf
+    .map((id) => games.find((game) => game.id === id))
+    .filter((game): game is NonNullable<typeof game> => Boolean(game));
 
   return (
-    <div className="page store-page storefront-redesign">
-      {featuredGame ? (
-        <section className="storefront-hero" aria-labelledby="featured-game">
-          <div className="hero-art-stack">
-            <Link className="hero-art-primary" href={`/games/${featuredGame.id}`}>
-              <Image
-                src={featuredGame.heroUrl}
-                alt={`${featuredGame.title} featured artwork`}
-                width={1400}
-                height={900}
-                priority
-                sizes="(max-width: 920px) 100vw, 56vw"
-              />
-              <Badge className="hero-art-badge" variant="secondary">
-                Featured build
-              </Badge>
-            </Link>
-            <div className="hero-art-note" aria-label="Featured game signal">
-              <Sparkles aria-hidden="true" />
-              <span>{featuredMeta?.signal ?? "Artifact unlocks"}</span>
-            </div>
+    <div className="page store-discover">
+      <DiscoverMotion />
+      <section className="discover-hero" aria-labelledby="hero-title">
+        <div className="discover-hero-copy">
+          <Badge className="discover-eyebrow" variant="outline">
+            <Globe2 aria-hidden="true" />
+            Region 6 public catalogue
+          </Badge>
+          <h1 id="hero-title" className="discover-headline">
+            A game portal
+            <br /> for{" "}
+            <span className="discover-headline-accent">artifact-led</span>
+            <br /> discovery.
+          </h1>
+          <p className="dishero-lede">
+            Browse civic games, collect cultural artifacts, and test the unlock API that
+            connects play sessions to public player libraries.
+          </p>
+          <div className="discover-hero-actions">
+            <Button asChild size="lg" className="discover-primary-cta">
+              <Link href="#featured-shelf">
+                Browse Games
+                <ChevronRight aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="discover-secondary-cta">
+              <Link href="/developer">
+                <MessageSquare aria-hidden="true" />
+                API tools
+              </Link>
+            </Button>
           </div>
+        </div>
 
-          <div className="storefront-hero-copy">
-            <Badge variant="outline">Region 6 public catalogue</Badge>
-            <h1 id="featured-game">A game store for artifact-led discovery.</h1>
-            <p>
-              Browse civic games, collect cultural artifacts, and test the unlock API that
-              connects play sessions to public player libraries.
-            </p>
-            <div className="featured-callout">
-              <span>Featured</span>
-              <strong>{featuredGame.title}</strong>
-              <small>{featuredMeta?.tone ?? featuredGame.description}</small>
-            </div>
-            <div className="storefront-actions">
-              <Button asChild size="lg">
-                <Link href={`/games/${featuredGame.id}`}>
-                  Open featured game
-                  <ArrowUpRight aria-hidden="true" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="secondary">
-                <Link href="/developer">
-                  <KeyRound aria-hidden="true" />
-                  Test unlock API
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      <section className="storefront-ledger" aria-label="Portal summary">
-        <Card className="ledger-card">
-          <CardContent>
-            <Database aria-hidden="true" />
-            <strong>{games.length}</strong>
-            <span>published games</span>
-          </CardContent>
-        </Card>
-        <Card className="ledger-card">
-          <CardContent>
-            <Box aria-hidden="true" />
-            <strong>{artifactCount}</strong>
-            <span>museum artifacts</span>
-          </CardContent>
-        </Card>
-        <Card className="ledger-card">
-          <CardContent>
-            <Star aria-hidden="true" />
-            <strong>{feedbackCount}</strong>
-            <span>player notes</span>
-          </CardContent>
-        </Card>
+        {featuredGame ? (
+          <FeaturedHero games={rotationGames} signals={signals} />
+        ) : null}
       </section>
 
-      <div className="section-heading storefront-section-heading">
-        <h2 id="games" className="section-title">
-          Curated game shelf
-        </h2>
-        <p className="muted">
-          Each listing ships with playable session data, unlockable museum artifacts, and
-          feedback records for the public profile flow.
-        </p>
-      </div>
-
-      <section className="storefront-grid" aria-label="Featured games">
-        {games.map((game) => (
-          <Link className="game-shelf-link" key={game.id} href={`/games/${game.id}`}>
-            <Card className="game-shelf-card">
-              <div className="game-shelf-cover">
-                <Image
-                  src={game.coverUrl}
-                  alt={`${game.title} cover art`}
-                  width={900}
-                  height={560}
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-                <Badge className="game-shelf-region" variant="secondary">
-                  {game.region}
-                </Badge>
-              </div>
-              <CardContent className="game-shelf-body">
+      <section className="discover-features" aria-label="Portal pillars">
+        <div className="discover-features-panel">
+          {featureItems.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <article className="discover-feature" key={feature.title}>
+                <span className="discover-feature-eyebrow">{feature.eyebrow}</span>
+                <span className="discover-feature-icon" aria-hidden="true">
+                  <Icon />
+                </span>
                 <div>
-                  <p className="game-shelf-genre">{gameMeta[game.id]?.genre ?? "portal game"}</p>
-                  <h2>{game.title}</h2>
-                  <p>{game.description}</p>
+                  <h2>{feature.title}</h2>
+                  <p>{feature.description}</p>
                 </div>
-                <div className="game-shelf-footer">
-                  <span>{game.artifacts.length} artifacts</span>
-                  <span>{game.feedbacks.length} notes</span>
-                  <ArrowUpRight aria-hidden="true" />
+                <span className="discover-feature-arrow" aria-hidden="true">
+                  <Sparkles />
+                </span>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="discover-featured" id="featured-shelf" aria-labelledby="featured-title">
+        <div className="discover-featured-copy">
+          <p className="discover-featured-eyebrow">FEATURED</p>
+          <h2 id="featured-title" className="discover-featured-title">
+            Echoes of Panay
+          </h2>
+          <p className="discover-featured-desc">
+            Explore forgotten harbor routes and reconstruct the stories they left behind.
+          </p>
+        </div>
+
+        <div className="discover-shelf" aria-label="Featured game shelf">
+          {shelfGames.map((game) => {
+            const meta = gameMeta[game.id];
+            const isPrimary = game.id === featuredGame?.id;
+            return (
+              <Link
+                key={game.id}
+                href={`/games/${game.id}`}
+                className={`discover-shelf-card${isPrimary ? " is-primary" : ""}`}
+              >
+                <div className="discover-shelf-cover">
+                  <Image
+                    src={game.coverUrl}
+                    alt={`${game.title} cover art`}
+                    width={720}
+                    height={460}
+                    sizes="(max-width: 980px) 100vw, 22vw"
+                  />
+                  <div className="discover-shelf-fade" aria-hidden="true" />
                 </div>
-              </CardContent>
-            </Card>
+                <div className="discover-shelf-body">
+                  <h3>{game.title}</h3>
+                  <span className="discover-shelf-genre">{meta?.genre ?? "Portal game"}</span>
+                </div>
+              </Link>
+            );
+          })}
+
+          <Link className="discover-shelf-card discover-shelf-cta" href="/games">
+            <div className="discover-shelf-body">
+              <span className="discover-shelf-cta-icon" aria-hidden="true">
+                <ArrowRight />
+              </span>
+              <h3>View all games</h3>
+              <p>Explore the full catalogue</p>
+            </div>
           </Link>
-        ))}
+        </div>
       </section>
     </div>
   );

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { feedbackSchema } from "@/lib/feedback";
 import { prisma } from "@/lib/prisma";
 
@@ -60,6 +61,11 @@ export async function POST(request: Request, { params }: FeedbackRouteContext) {
       comment: parsed.data.comment
     }
   });
+
+  revalidatePath(`/games/${params.id}`);
+  if (userId) {
+    revalidatePath(`/profile/${userId}`);
+  }
 
   return NextResponse.json({ feedback }, { status: 201 });
 }

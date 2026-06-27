@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Award, ChevronRight, MessageSquare, ShieldCheck, Sparkles, Star } from "lucide-react";
 import { FeedbackForm } from "@/app/games/[id]/FeedbackForm";
+import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 
 type GamePageProps = {
@@ -9,6 +11,22 @@ type GamePageProps = {
     id: string;
   };
 };
+
+function RatingStars({ rating }: { rating: number }) {
+  return (
+    <span className="rating-stars" aria-label={`${rating} out of 5 rating`}>
+      {[1, 2, 3, 4, 5].map((value) => (
+        <span
+          aria-hidden="true"
+          className={value <= rating ? "is-filled" : undefined}
+          key={value}
+        >
+          ★
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export default async function GamePage({ params }: GamePageProps) {
   const game = await prisma.game.findUnique({
@@ -29,6 +47,12 @@ export default async function GamePage({ params }: GamePageProps) {
           user: true
         },
         take: 6
+      },
+      _count: {
+        select: {
+          artifacts: true,
+          feedbacks: true
+        }
       }
     }
   });
@@ -37,13 +61,38 @@ export default async function GamePage({ params }: GamePageProps) {
     notFound();
   }
 
+  const ratingAggregate = await prisma.feedback.aggregate({
+    where: {
+      gameId: game.id
+    },
+    _avg: {
+      rating: true
+    }
+  });
+  const averageRating = ratingAggregate._avg.rating
+    ? ratingAggregate._avg.rating.toFixed(1)
+    : "New";
+  const averageRatingRounded = ratingAggregate._avg.rating
+    ? Math.round(ratingAggregate._avg.rating)
+    : 0;
+  const featuredArtifact = game.artifacts[0];
+
+  function formatTimestamp(date: Date) {
+    return new Intl.DateTimeFormat("en", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    }).format(date);
+  }
+
   return (
-    <div className="page">
+    <div className="page game-detail-page">
       <Link className="back-link" href="/">
-        Back to store
+        Back to portal
       </Link>
 
-      <section className="game-hero">
+      <section className="game-hero game-hero-redesign">
         <div className="game-hero-media">
           <Image
             src={game.heroUrl}
@@ -53,23 +102,63 @@ export default async function GamePage({ params }: GamePageProps) {
             priority
             sizes="(max-width: 960px) 100vw, 64vw"
           />
+          {featuredArtifact ? (
+            <div className="game-hero-artifact">
+              <Image
+                src={featuredArtifact.imageUrl}
+                alt={`${featuredArtifact.name} preview`}
+                width={92}
+                height={92}
+                sizes="92px"
+              />
+              <div>
+                <span>{featuredArtifact.rarity}</span>
+                <strong>{featuredArtifact.name}</strong>
+              </div>
+            </div>
+          ) : null}
         </div>
         <div className="game-buy-panel">
           <p className="eyebrow">{game.developer}</p>
           <h1>{game.title}</h1>
           <p>{game.description}</p>
-          <div className="store-tags" aria-label="Game details">
-            <span>{game.region}</span>
-            <span>{game.artifacts.length} hidden rewards</span>
-            <span>{game.feedbacks.length} reviews</span>
+          <div className="game-quick-stats" aria-label="Game summary">
+            <div>
+              <ShieldCheck aria-hidden="true" />
+              <span>Region</span>
+              <strong>{game.region}</strong>
+            </div>
+            <div>
+              <Award aria-hidden="true" />
+              <span>Artifacts</span>
+              <strong>{game._count.artifacts}</strong>
+            </div>
+            <div>
+              <Star aria-hidden="true" />
+              <span>Rating</span>
+              <strong>
+                {averageRatingRounded ? <RatingStars rating={averageRatingRounded} /> : null}
+                {averageRating}
+              </strong>
+            </div>
+            <div>
+              <MessageSquare aria-hidden="true" />
+              <span>Feedback</span>
+              <strong>{game._count.feedbacks}</strong>
+            </div>
           </div>
           <div className="actions">
-            <a className="button" href="#feedback">
-              Leave feedback
-            </a>
-            <Link className="button secondary" href="/developer">
-              Unlock API
-            </Link>
+            <Button asChild size="lg">
+              <a href="#feedback">
+                Leave feedback
+              </a>
+            </Button>
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/developer">
+                Unlock API
+                <ChevronRight aria-hidden="true" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -80,10 +169,16 @@ export default async function GamePage({ params }: GamePageProps) {
             <p className="kicker">Story archive</p>
             <h2>Digital museum lore</h2>
             <p className="muted">{game.lore}</p>
-            <p>
-              This game has {game.artifacts.length} hidden artifacts ready for the museum
-              handshake.
-            </p>
+            <div className="lore-metrics" aria-label="Museum handshake summary">
+              <span>
+                <Sparkles aria-hidden="true" />
+                {game._count.artifacts} artifact rewards
+              </span>
+              <span>
+                <ShieldCheck aria-hidden="true" />
+                API unlock ready
+              </span>
+            </div>
           </div>
 
           <h2 className="section-title">Hidden artifacts</h2>
@@ -101,6 +196,7 @@ export default async function GamePage({ params }: GamePageProps) {
                   <p className="kicker">{artifact.rarity}</p>
                   <h3>{artifact.name}</h3>
                   <p className="muted">{artifact.description}</p>
+                  <code>{artifact.id}</code>
                 </div>
               </article>
             ))}
@@ -113,8 +209,12 @@ export default async function GamePage({ params }: GamePageProps) {
                 <article className="panel feedback-item" key={feedback.id}>
                   <p>{feedback.comment}</p>
                   <p className="meta-row">
-                    <span>{feedback.rating}/5 rating</span>
+                    <span>
+                      <RatingStars rating={feedback.rating} />
+                      {feedback.rating}/5 rating
+                    </span>
                     <span>{feedback.user?.name ?? "Anonymous player"}</span>
+                    <span>{formatTimestamp(feedback.createdAt)}</span>
                   </p>
                 </article>
               ))}
@@ -131,8 +231,8 @@ export default async function GamePage({ params }: GamePageProps) {
           <p className="kicker">Community</p>
           <h2>Player feedback</h2>
           <p className="muted">
-            The public portal collects player feedback nationwide while unlocks are handled
-            through the API.
+            Submit a note from a seeded user. It will appear in this game feed and on the
+            selected player profile.
           </p>
           <FeedbackForm gameId={game.id} />
         </aside>
