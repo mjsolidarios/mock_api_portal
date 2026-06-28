@@ -2716,13 +2716,15 @@ code {
 
 .discover-shelf-card:hover {
   background:
-    linear-gradient(180deg, rgba(98, 211, 255, 0.075), rgba(255, 255, 255, 0.018)),
+    linear-gradient(180deg, rgba(98, 211, 255, 0.12), rgba(255, 255, 255, 0.02)),
     var(--discover-panel-strong);
-  border-color: rgba(98, 211, 255, 0.46);
+  border-color: rgba(98, 211, 255, 0.6);
   box-shadow:
-    0 28px 80px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(98, 211, 255, 0.12);
-  transform: translateY(-6px);
+    0 0 0 1px rgba(98, 211, 255, 0.32),
+    0 0 60px 4px rgba(98, 211, 255, 0.32),
+    0 0 120px 12px rgba(88, 230, 216, 0.18),
+    0 34px 90px rgba(0, 0, 0, 0.55);
+  z-index: 6;
 }
 
 .discover-shelf-card:hover::before {
@@ -2762,13 +2764,31 @@ code {
   z-index: 2;
 }
 
-.discover-shelf-card:hover {
-  transform: translateY(-16px) scale(1.07);
-  z-index: 6;
+.discover-shelf-card:nth-child(1):hover {
+  transform: translateX(0%) translateY(-22px) rotateY(0deg) scale(1.1);
+}
+
+.discover-shelf-card:nth-child(2):hover {
+  transform: translateY(-26px) scale(1.12);
+}
+
+.discover-shelf-card:nth-child(4):hover {
+  transform: translateX(0%) translateY(-22px) rotateY(0deg) scale(1.1);
 }
 
 .discover-shelf-card.is-active:hover {
-  transform: translateY(-18px) scale(1.08);
+  transform: translateY(-28px) scale(1.14);
+}
+
+.discover-shelf-card:hover .discover-shelf-cta-pill {
+  background: rgba(98, 211, 255, 0.22);
+  border-color: rgba(98, 211, 255, 0.55);
+  color: #ffffff;
+}
+
+.discover-shelf-card:hover .discover-shelf-cover img {
+  filter: saturate(1.12) contrast(1.06) brightness(1.05);
+  transform: scale(1.06);
 }
 
 .discover-shelf-cover {
@@ -2786,11 +2806,6 @@ code {
     filter 520ms ease,
     transform 520ms ease;
   width: 100%;
-}
-
-.discover-shelf-card:hover .discover-shelf-cover img {
-  filter: saturate(1.08) contrast(1.04);
-  transform: scale(1.04);
 }
 
 .discover-shelf-fade {
