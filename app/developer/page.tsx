@@ -1,3 +1,4 @@
+import { GameSubmissionForm } from "@/app/developer/GameSubmissionForm";
 import { UnlockTester } from "@/app/developer/UnlockTester";
 import { SeedButton } from "@/components/SeedButton";
 import { Button } from "@/components/ui/button";
@@ -125,7 +126,7 @@ export default function DeveloperPage() {
               <a href="#mock-tester">Test endpoint</a>
             </Button>
             <Button asChild size="lg" variant="secondary">
-              <a href="/profile/user_maya">View PixelKite profile</a>
+              <a href="#submit-game">Submit game</a>
             </Button>
           </div>
         </div>
@@ -141,6 +142,16 @@ export default function DeveloperPage() {
           </p>
           <SeedButton />
         </aside>
+      </section>
+
+      <section className="doc-section" id="submit-game">
+        <h2 className="section-title">Tester game submission</h2>
+        <p className="muted doc-copy">
+          Create a catalogue game from hosted image URLs. The portal also creates one
+          hidden artifact, one PixelKite mock session, and one generated developer key
+          for unlock API testing.
+        </p>
+        <GameSubmissionForm />
       </section>
 
       <section className="doc-section">

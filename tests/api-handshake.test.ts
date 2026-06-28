@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
 import { unlockArtifact } from "@/lib/achievements";
+import { createTesterGame } from "@/lib/games";
 
 const prisma = new PrismaClient();
 
@@ -20,6 +21,15 @@ async function resetTestData() {
       handle: "test_user",
       avatarUrl:
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=240&q=80"
+    }
+  });
+
+  await prisma.user.create({
+    data: {
+      id: "user_maya",
+      name: "PixelKite",
+      handle: "pixel_kite",
+      avatarUrl: "/avatars/pixel-kite_001.jpg"
     }
   });
 
@@ -119,6 +129,27 @@ async function run() {
   });
 
   assert.equal(invalidSession.status, "invalid_session");
+
+  const testerGame = await createTesterGame({
+    title: "Tester Portal Game",
+    developer: "Portal QA",
+    region: "Region 6",
+    description: "A tester-submitted game for validating generated mock API keys.",
+    lore: "A small lore entry that gives the tester artifact enough portal context.",
+    coverUrl:
+      "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=800&q=80",
+    artifactName: "QA Relic",
+    artifactDescription: "A generated artifact used for tester unlock handshakes.",
+    artifactImageUrl:
+      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=600&q=80",
+    artifactRarity: "Rare"
+  });
+
+  assert.match(testerGame.mockUnlock.developerKey, /^mock-tester_portal_game-/);
+
+  const testerUnlock = await unlockArtifact(testerGame.mockUnlock);
+
+  assert.equal(testerUnlock.status, "unlocked");
 
   console.log("API handshake tests passed.");
 }

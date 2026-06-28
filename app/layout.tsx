@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Navigation } from "@/components/Navigation";
 import { SeedButton } from "@/components/SeedButton";
@@ -188,18 +187,6 @@ export default async function RootLayout({
           <Navigation />
           <div className="shell-actions" aria-label="Portal shortcuts">
             <SeedButton />
-            <label className="search-field" htmlFor="portal-search">
-              <Search aria-hidden="true" />
-              <input
-                id="portal-search"
-                type="search"
-                placeholder="Search games"
-                autoComplete="off"
-              />
-              <span className="search-shortcut" aria-hidden="true">
-                /
-              </span>
-            </label>
             {profile ? (
               <Link className="profile-chip" href={`/profile/${profile.id}`}>
                 <Avatar className="profile-chip-avatar">

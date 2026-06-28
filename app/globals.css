@@ -1057,6 +1057,10 @@ button:disabled {
   resize: vertical;
 }
 
+.tall-code-input {
+  min-height: 460px;
+}
+
 .form input:focus,
 .form select:focus,
 .form textarea:focus,
@@ -1382,9 +1386,44 @@ code {
   line-height: 1.42;
 }
 
+.upload-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 16px;
+}
+
+.upload-tile {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line);
+  color: var(--text);
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+
+.upload-tile span {
+  font-weight: 850;
+}
+
+.upload-tile input {
+  color: var(--muted);
+  font-size: 0.84rem;
+  max-width: 100%;
+}
+
+.upload-tile small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
 .notice {
   border: 1px solid transparent;
   padding: 12px;
+}
+
+.notice h3 {
+  margin: 0 0 8px;
 }
 
 .notice.success {
@@ -1951,7 +1990,8 @@ code {
   .field-list div,
   .game-quick-stats,
   .scenario-list,
-  .status-grid {
+  .status-grid,
+  .upload-grid {
     grid-template-columns: 1fr;
   }
 
