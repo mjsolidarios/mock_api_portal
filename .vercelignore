@@ -1,0 +1,33 @@
+# Files and directories excluded from Vercel deployments.
+# Keeping the deployment bundle small speeds up cold installs.
+
+# Tests and test artifacts
+tests/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+coverage/
+
+# Local Prisma artifacts (the schema and seed script are still deployed)
+prisma/dev.db
+prisma/dev.db-journal
+
+# Local environment files (Vercel injects env vars from the dashboard)
+.env
+.env.local
+.env.*.local
+
+# Build output / logs
+.next/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Agent and editor metadata
+.agents/
+.codex/
+skills-lock.json
+components.json
+guide.png
