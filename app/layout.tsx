@@ -11,7 +11,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://r6portal.dev";
 const SITE_NAME = "Region 6 Portal";
 const SITE_DESCRIPTION =
   "A public Region 6 portal for civic games, player profiles, and cultural artifact unlocks. Browse the catalogue, collect cultural artifacts, and test the unlock API.";
-const OG_IMAGE = "/og.png";
+const OG_IMAGE_PATH = "/og-region6-portal.jpg";
+const OG_IMAGE_URL = new URL(OG_IMAGE_PATH, SITE_URL).toString();
 
 export const viewport: Viewport = {
   themeColor: "#070b11",
@@ -69,11 +70,11 @@ export const metadata: Metadata = {
       "Browse civic games, collect cultural artifacts, and test the unlock API that connects play sessions to public player libraries.",
     images: [
       {
-        url: OG_IMAGE,
-        width: 1730,
-        height: 909,
+        url: OG_IMAGE_URL,
+        width: 1200,
+        height: 630,
         alt: "Region 6 Portal — A game portal for artifact-led discovery",
-        type: "image/png"
+        type: "image/jpeg"
       }
     ]
   },
@@ -86,9 +87,9 @@ export const metadata: Metadata = {
       "Browse civic games, collect cultural artifacts, and test the unlock API that connects play sessions to public player libraries.",
     images: [
       {
-        url: OG_IMAGE,
-        width: 1730,
-        height: 909,
+        url: OG_IMAGE_URL,
+        width: 1200,
+        height: 630,
         alt: "Region 6 Portal — A game portal for artifact-led discovery"
       }
     ]
