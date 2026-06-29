@@ -2897,7 +2897,7 @@ code {
 .discover-hero {
   align-items: start;
   display: block;
-  min-height: clamp(430px, calc(100dvh - 210px), 573px);
+  min-height: clamp(610px, calc(100dvh - 68px), 840px);
   overflow: visible;
   padding-top: clamp(42px, 3.1vw, 58px);
   position: relative;
@@ -2906,7 +2906,7 @@ code {
 .discover-hero-copy {
   display: grid;
   justify-items: start;
-  max-width: 650px;
+  max-width: min(650px, 54vw);
   position: relative;
   z-index: 2;
 }
@@ -3012,9 +3012,8 @@ code {
   box-shadow: none;
   clip-path: none;
   display: block;
-  height: calc(100dvh - 86px);
+  height: 100%;
   inset: 0 auto auto calc(50% - 50vw);
-  min-height: 100%;
   overflow: hidden;
   position: absolute;
   width: 100vw;
@@ -3149,7 +3148,7 @@ code {
 }
 
 .discover-features {
-  margin-top: -40px;
+  margin-top: clamp(-128px, -9vw, -58px);
   max-width: 1210px;
   position: relative;
   z-index: 3;
@@ -3961,11 +3960,11 @@ code {
 
 @media (max-height: 760px) and (min-width: 981px) {
   .discover-hero {
-    min-height: clamp(470px, calc(100dvh - 170px), 560px);
+    min-height: clamp(560px, calc(100dvh - 68px), 690px);
   }
 
   .discover-features {
-    margin-top: -12px;
+    margin-top: -42px;
   }
 
   .discover-featured {
@@ -3993,6 +3992,10 @@ code {
     gap: 24px;
     grid-template-columns: minmax(0, 1fr);
     min-height: auto;
+  }
+
+  .discover-hero-copy {
+    max-width: 680px;
   }
 
   .discover-shelf {
@@ -4024,6 +4027,10 @@ code {
     min-height: clamp(220px, 64vw, 420px);
     position: relative;
     width: 100%;
+  }
+
+  .discover-features {
+    margin-top: clamp(18px, 4vw, 34px);
   }
 
   .search-field {
