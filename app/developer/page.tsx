@@ -109,6 +109,24 @@ const statusCodes = [
   }
 ];
 
+const toolHighlights = [
+  {
+    label: "Seed fixtures",
+    value: "5 games",
+    detail: "Reset the demo state before replaying unlock scenarios."
+  },
+  {
+    label: "Submission output",
+    value: "4 generated IDs",
+    detail: "Every tester game returns the game, artifact, session, and developer key values."
+  },
+  {
+    label: "Unlock testing",
+    value: "201 / 200",
+    detail: "Fresh unlocks create the artifact entry, then repeated calls stay idempotent."
+  }
+];
+
 export default function DeveloperPage() {
   return (
     <div className="page developer-page">
@@ -117,9 +135,8 @@ export default function DeveloperPage() {
           <p className="eyebrow">Developer API</p>
           <h1 className="page-title">Artifact unlock handshake</h1>
           <p className="lead">
-            Use this endpoint when a game awards a hidden artifact. It validates the
-            developer key, active session, player, game, and artifact before writing to
-            the portal profile.
+            This workspace covers the full mock flow: create a tester game, capture the
+            generated IDs, and send unlock requests against the seeded portal users.
           </p>
           <div className="actions">
             <Button asChild size="lg">
@@ -144,12 +161,22 @@ export default function DeveloperPage() {
         </aside>
       </section>
 
+      <section className="developer-highlight-grid" aria-label="Developer API workflow summary">
+        {toolHighlights.map((item) => (
+          <article className="developer-highlight-card" key={item.label}>
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+            <p>{item.detail}</p>
+          </article>
+        ))}
+      </section>
+
       <section className="doc-section" id="submit-game">
-        <h2 className="section-title">Tester game submission</h2>
+        <h2 className="section-title">Create a tester game package</h2>
         <p className="muted doc-copy">
-          Create a catalogue game from hosted image URLs. The portal also creates one
-          hidden artifact, one PixelKite mock session, and one generated developer key
-          for unlock API testing.
+          Build the record with structured fields instead of raw JSON. The portal still
+          posts the same payload, but the submission tool now keeps image specs, preview
+          URLs, and generated IDs visible in one place.
         </p>
         <GameSubmissionForm />
       </section>

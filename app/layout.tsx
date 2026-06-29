@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { Navigation } from "@/components/Navigation";
 import { SeedButton } from "@/components/SeedButton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserSwitchButton } from "@/components/UserSwitchButton";
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://r6portal.dev";
@@ -115,11 +116,31 @@ export const metadata: Metadata = {
   }
 };
 
-async function getActiveProfile() {
-  const profile =
-    (await prisma.user.findUnique({ where: { id: "user_lio" } })) ??
-    (await prisma.user.findFirst({ orderBy: { createdAt: "asc" } }));
-  return profile;
+async function getPortalUsers() {
+  return prisma.user.findMany({
+    orderBy: {
+      createdAt: "asc"
+    },
+    select: {
+      id: true,
+      name: true,
+      handle: true,
+      avatarUrl: true
+    }
+  });
+}
+
+async function getActiveProfile(users: Awaited<ReturnType<typeof getPortalUsers>>) {
+  const activeUserId = cookies().get("portal_active_user_id")?.value;
+
+  if (activeUserId) {
+    const selected = users.find((user) => user.id === activeUserId);
+    if (selected) {
+      return selected;
+    }
+  }
+
+  return users.find((user) => user.id === "user_lio") ?? users[0] ?? null;
 }
 
 export default async function RootLayout({
@@ -127,7 +148,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const profile = await getActiveProfile();
+  const users = await getPortalUsers();
+  const profile = await getActiveProfile(users);
+  const activeProfileHref = profile ? `/profile/${profile.id}` : "/profile/user_maya";
 
   const organizationLd = {
     "@context": "https://schema.org",
@@ -184,25 +207,10 @@ export default async function RootLayout({
           <Link className="brand" href="/">
             R6 Portal
           </Link>
-          <Navigation />
+          <Navigation libraryHref={activeProfileHref} />
           <div className="shell-actions" aria-label="Portal shortcuts">
             <SeedButton />
-            {profile ? (
-              <Link className="profile-chip" href={`/profile/${profile.id}`}>
-                <Avatar className="profile-chip-avatar">
-                  <AvatarImage src={profile.avatarUrl} alt={`${profile.name} avatar`} />
-                  <AvatarFallback>
-                    {profile.name
-                      .split(" ")
-                      .map((part) => part[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                {profile.name.split(" ")[0]}
-              </Link>
-            ) : null}
+            <UserSwitchButton users={users} activeUserId={profile?.id ?? null} />
           </div>
         </header>
         <main id="content">{children}</main>
@@ -221,7 +229,7 @@ export default async function RootLayout({
               <h2>Explore</h2>
               <Link href="/">Discover</Link>
               <Link href="/games">Game catalogue</Link>
-              <Link href="/profile/user_maya">Player library</Link>
+              <Link href={activeProfileHref}>Player library</Link>
             </div>
             <div>
               <h2>Build</h2>

@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function Navigation() {
+type NavigationProps = {
+  libraryHref: string;
+};
+
+export function Navigation({ libraryHref }: NavigationProps) {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -16,7 +20,7 @@ export function Navigation() {
       <Link href="/" className={isActive("/") ? "active" : ""}>
         Discover
       </Link>
-      <Link href="/profile/user_maya" className={isActive("/profile") ? "active" : ""}>
+      <Link href={libraryHref} className={isActive("/profile") ? "active" : ""}>
         Library
       </Link>
       <Link href="/developer" className={isActive("/developer") ? "active" : ""}>
