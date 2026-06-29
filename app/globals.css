@@ -1253,7 +1253,170 @@ pre {
   line-height: 1.55;
 }
 
-pre {
+.json-editor-surface,
+.json-code-surface {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
+    #070c12;
+  border: 1px solid var(--line);
+}
+
+.json-code-surface.is-compact .json-code-toolbar {
+  min-height: 42px;
+  padding: 8px 10px 8px 12px;
+}
+
+.json-code-toolbar {
+  align-items: center;
+  border-bottom: 1px solid rgba(185, 216, 236, 0.1);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  min-height: 48px;
+  padding: 10px 12px 10px 14px;
+}
+
+.json-code-meta,
+.json-code-actions {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.json-code-meta {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.json-code-badge,
+.json-code-status {
+  align-items: center;
+  border: 1px solid transparent;
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0 8px;
+}
+
+.json-code-badge {
+  background: rgba(98, 211, 255, 0.08);
+  border-color: rgba(98, 211, 255, 0.16);
+  color: #caefff;
+  letter-spacing: 0.04em;
+}
+
+.json-code-status-valid {
+  background: rgba(96, 201, 123, 0.1);
+  border-color: rgba(96, 201, 123, 0.2);
+  color: #ceefcf;
+}
+
+.json-code-status-error {
+  background: rgba(255, 129, 120, 0.1);
+  border-color: rgba(255, 129, 120, 0.18);
+  color: #ffd1cc;
+}
+
+.json-code-frame,
+.json-editor-frame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.json-code-gutter {
+  background: rgba(255, 255, 255, 0.02);
+  border-right: 1px solid rgba(185, 216, 236, 0.08);
+  color: rgba(150, 168, 183, 0.82);
+  display: grid;
+  font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  min-width: 52px;
+  padding: 14px 8px 14px 0;
+  text-align: right;
+  user-select: none;
+}
+
+.json-code-gutter span {
+  display: block;
+  min-height: 1.65em;
+}
+
+.json-editor-gutter {
+  max-height: 420px;
+  overflow: hidden;
+}
+
+.json-code-block {
+  background: transparent;
+  border: 0;
+  color: #d3f2ff;
+  margin: 0;
+  min-width: 0;
+  overflow: auto;
+  padding: 14px 16px;
+  white-space: pre-wrap;
+}
+
+.json-code-line {
+  display: block;
+  min-height: 1.65em;
+}
+
+.json-code-editor {
+  background: transparent;
+  border: 0;
+  color: #d3f2ff;
+  font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  min-height: 112px;
+  overflow: auto;
+  padding: 14px 16px;
+  resize: vertical;
+  width: 100%;
+}
+
+.json-code-editor:focus {
+  outline: none;
+}
+
+.json-code-footer {
+  border-top: 1px solid rgba(185, 216, 236, 0.08);
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  padding: 10px 14px 12px;
+}
+
+.json-token-key {
+  color: #7fd6ff;
+}
+
+.json-token-string {
+  color: #c5ee93;
+}
+
+.json-token-number {
+  color: #ffc98f;
+}
+
+.json-token-boolean {
+  color: #ffa8be;
+}
+
+.json-token-null {
+  color: #f6b0ff;
+}
+
+.json-token-punctuation {
+  color: #89a2b3;
+}
+
+pre:not(.json-code-block) {
   background: #070c12;
   border: 1px solid var(--line);
   color: #d3f2ff;
@@ -1758,8 +1921,13 @@ code {
   margin-top: 22px;
 }
 
-.submission-response-panel pre,
-.submission-preview-panel pre {
+.submission-response-panel pre:not(.json-code-block),
+.submission-preview-panel pre:not(.json-code-block) {
+  margin-top: 16px;
+}
+
+.submission-response-panel .json-code-surface,
+.submission-preview-panel .json-code-surface {
   margin-top: 16px;
 }
 
@@ -2477,6 +2645,19 @@ code {
     width: 100%;
   }
 
+  .json-code-toolbar {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .json-code-actions {
+    width: 100%;
+  }
+
+  .json-code-actions button {
+    flex: 1 1 0;
+  }
+
   .developer-hero {
     padding: 22px;
   }
@@ -2585,6 +2766,20 @@ code {
   pre {
     font-size: 0.78rem;
     padding: 14px;
+  }
+
+  pre.json-code-block {
+    padding: 12px 12px 12px 14px;
+  }
+
+  .json-code-gutter {
+    min-width: 42px;
+  }
+
+  .json-code-block,
+  .json-code-editor {
+    font-size: 0.8rem;
+    padding: 12px 12px 12px 14px;
   }
 }
 

@@ -1,5 +1,6 @@
 import { GameSubmissionForm } from "@/app/developer/GameSubmissionForm";
 import { UnlockTester } from "@/app/developer/UnlockTester";
+import { JsonCodeBlock } from "@/components/JsonCodeBlock";
 import { SeedButton } from "@/components/SeedButton";
 import { Button } from "@/components/ui/button";
 
@@ -212,7 +213,11 @@ export default function DeveloperPage() {
 
           <article className="panel">
             <h3>Example request body</h3>
-            <pre>{requestBody}</pre>
+            <JsonCodeBlock
+              ariaLabel="Example unlock request body JSON"
+              compact
+              value={requestBody}
+            />
           </article>
         </div>
       </section>
@@ -226,7 +231,11 @@ export default function DeveloperPage() {
           </article>
           <article className="panel">
             <h3>201 response</h3>
-            <pre>{successResponse}</pre>
+            <JsonCodeBlock
+              ariaLabel="Example unlock success response JSON"
+              compact
+              value={successResponse}
+            />
           </article>
         </div>
       </section>

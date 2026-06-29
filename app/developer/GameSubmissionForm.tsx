@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { CheckCircle2, FileJson2, ImagePlus, Loader2, RefreshCcw, Sparkles } from "lucide-react";
+import { JsonCodeBlock } from "@/components/JsonCodeBlock";
 import { Button } from "@/components/ui/button";
 
 const defaultDraft = {
@@ -13,12 +14,11 @@ const defaultDraft = {
     "A browser game about tracing island signals, repairing routes, and discovering a hidden museum artifact.",
   lore:
     "Each restored signal reveals a memory fragment from Western Visayas trade routes and coastal communities.",
-  coverUrl: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-  heroUrl: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80",
+  coverUrl: "/game-covers/balangay-signal-cover.png",
+  heroUrl: "/game-covers/balangay-signal-hero.png",
   artifactName: "Signal Shell",
   artifactDescription: "A shell marker used to relay warnings between coastal settlements.",
-  artifactImageUrl:
-    "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=700&q=80",
+  artifactImageUrl: "/artifacts/signal-shell-sample.png",
   artifactRarity: "Rare"
 };
 
@@ -479,7 +479,11 @@ export function GameSubmissionForm() {
             </div>
           )}
 
-          <pre>{response ? JSON.stringify(response, null, 2) : "Waiting for a submission result."}</pre>
+          <JsonCodeBlock
+            ariaLabel="Game submission response JSON"
+            value={response ? JSON.stringify(response, null, 2) : ""}
+            emptyText="Waiting for a submission result."
+          />
         </section>
 
         <section className="panel submission-preview-panel">
@@ -490,7 +494,10 @@ export function GameSubmissionForm() {
             </div>
             <FileJson2 aria-hidden="true" className="submission-preview-icon" />
           </div>
-          <pre>{payloadPreview}</pre>
+          <JsonCodeBlock
+            ariaLabel="Game submission payload JSON"
+            value={payloadPreview}
+          />
         </section>
       </aside>
     </div>

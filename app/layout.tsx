@@ -70,8 +70,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: OG_IMAGE,
-        width: 1200,
-        height: 630,
+        width: 1730,
+        height: 909,
         alt: "Region 6 Portal — A game portal for artifact-led discovery",
         type: "image/png"
       }
@@ -87,8 +87,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: OG_IMAGE,
-        width: 1200,
-        height: 630,
+        width: 1730,
+        height: 909,
         alt: "Region 6 Portal — A game portal for artifact-led discovery"
       }
     ]

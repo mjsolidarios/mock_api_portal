@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { JsonCodeBlock } from "@/components/JsonCodeBlock";
+import { JsonCodeEditor } from "@/components/JsonCodeEditor";
 import { Button } from "@/components/ui/button";
 
 const mockRequests = [
@@ -110,12 +112,11 @@ export function UnlockTester() {
             </button>
           ))}
         </div>
-        <textarea
-          aria-label="Unlock request JSON"
-          className="code-input"
-          rows={14}
+        <JsonCodeEditor
+          ariaLabel="Unlock request JSON"
+          minRows={14}
           value={payload}
-          onChange={(event) => setPayload(event.target.value)}
+          onChange={setPayload}
         />
         <div className="actions">
           <Button disabled={isSubmitting} onClick={sendUnlock} type="button" size="lg">
@@ -136,7 +137,11 @@ export function UnlockTester() {
             <p className="muted">The response includes the HTTP status for fast mock testing.</p>
           </div>
         </div>
-        <pre>{response || "Submit the sample request to unlock PixelKite's artifact."}</pre>
+        <JsonCodeBlock
+          ariaLabel="Unlock response JSON"
+          value={response}
+          emptyText="Submit the sample request to unlock PixelKite's artifact."
+        />
       </section>
     </div>
   );
